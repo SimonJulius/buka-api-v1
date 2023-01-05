@@ -2,8 +2,8 @@ import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { isEmpty } from 'lodash';
 import { UsersService } from '../user/user.service';
-import { UserUtils } from 'src/utils/users.utils';
-import { User } from 'src/user/schemas/user.schema';
+import { UserUtils } from '../utils/users.utils';
+import { User } from '../user/schemas/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +37,21 @@ export class AuthService {
     const { password, ...userInfo } = user;
     return {
       access_token: this.jwtService.sign(payload),
+      ...userInfo,
+    };
+  }
+
+  async createUser(payload: User) {
+    payload.email = payload.email.toLowerCase();
+    const user = await this.userService.create(payload);
+    const { password, ...userInfo } = await user;
+    const jwtPayload = {
+      name: `${user.firstName}  ${user.lastName}`,
+      sub: user.email,
+    };
+
+    return {
+      access_token: this.jwtService.sign(jwtPayload),
       ...userInfo,
     };
   }

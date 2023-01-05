@@ -1,4 +1,16 @@
 import { Module } from '@nestjs/common';
-
-@Module({})
+import { MongooseModule } from '@nestjs/mongoose';
+import { RestaurantController } from './restaurant.controller';
+import { RestaurantService } from './restaurants.service';
+import { Restaurant, RestaurantSchema } from './schemas/restaurant.schema';
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: Restaurant.name, schema: RestaurantSchema },
+    ]),
+  ],
+  controllers: [RestaurantController],
+  providers: [RestaurantService],
+  exports: [RestaurantService],
+})
 export class RestaurantsModule {}
