@@ -7,6 +7,5 @@ export class CreateRestaurantDto {
   @IsNotEmpty()
   readonly description: string;
 
-  @IsNotEmpty()
   readonly ownerId: string;
 }
