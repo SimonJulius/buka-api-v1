@@ -34,25 +34,20 @@ export class AuthService {
       name: `${user.firstName}  ${user.lastName}`,
       sub: user.email,
     };
-    const { password, ...userInfo } = user;
-    return {
-      access_token: this.jwtService.sign(payload),
-      ...userInfo,
-    };
+
+    user.accessToken = this.jwtService.sign(payload);
+    return user;
   }
 
   async createUser(payload: User) {
-    payload.email = payload.email.toLowerCase();
     const user = await this.userService.create(payload);
-    const { password, ...userInfo } = await user;
     const jwtPayload = {
       name: `${user.firstName}  ${user.lastName}`,
       sub: user.email,
     };
 
-    return {
-      access_token: this.jwtService.sign(jwtPayload),
-      ...userInfo,
-    };
+    user.accessToken = this.jwtService.sign(jwtPayload);
+
+    return user;
   }
 }

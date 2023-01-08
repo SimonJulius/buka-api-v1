@@ -11,9 +11,9 @@ export class RestaurantService {
     private readonly restaurantModel: Model<RestaurantDocument>,
   ) {}
 
-  async create(CreateRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
+  async create(createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
     const createdRestaurant = await this.restaurantModel.create(
-      CreateRestaurantDto,
+      createRestaurantDto,
     );
     return createdRestaurant;
   }

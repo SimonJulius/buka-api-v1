@@ -1,18 +1,24 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { Exclude } from 'class-transformer';
+import { Document, ObjectId } from 'mongoose';
+import { Exclude, Transform } from 'class-transformer';
 
-export type UserDocument = HydratedDocument<User>;
+export type UserDocument = Document & User;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
+  @Transform(({ value }) => value.toString())
+  _id: ObjectId;
+
   @Prop()
+  accessToken: string;
+
+  @Prop({ trim: true })
   firstName: string;
 
-  @Prop()
+  @Prop({ trim: true })
   lastName: string;
 
-  @Prop({ unique: true })
+  @Prop({ unique: true, lowercase: true })
   email: string;
 
   @Prop()

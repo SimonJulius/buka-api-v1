@@ -11,7 +11,7 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     createUserDto.password = await UserUtils.saltAndHashPassword(
       createUserDto.password,
     );
