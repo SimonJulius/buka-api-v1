@@ -3,19 +3,23 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Restaurant, RestaurantDocument } from './schemas/restaurant.schema';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
+import { User } from '../user/schemas/user.schema';
 
 @Injectable()
 export class RestaurantService {
   constructor(
     @InjectModel(Restaurant.name)
-    private readonly restaurantModel: Model<RestaurantDocument>,
+    private restaurantModel: Model<RestaurantDocument>,
   ) {}
 
-  async create(createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
-    const createdRestaurant = await this.restaurantModel.create(
-      createRestaurantDto,
-    );
-    return createdRestaurant;
+  async create(createRestaurantDto: CreateRestaurantDto, owner: User) {
+    const createdRestaurant = new this.restaurantModel({
+      ...createRestaurantDto,
+      owner,
+    });
+    await createdRestaurant.populate('owner');
+
+    return createdRestaurant.save();
   }
 
   async findAll(): Promise<Restaurant[]> {

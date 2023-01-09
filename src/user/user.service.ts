@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,11 +12,26 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    createUserDto.password = await UserUtils.saltAndHashPassword(
-      createUserDto.password,
-    );
-    const createdUser = await this.userModel.create(createUserDto);
-    return createdUser;
+    try {
+      createUserDto.password = await UserUtils.saltAndHashPassword(
+        createUserDto.password,
+      );
+      const createdUser = await this.userModel.create(createUserDto);
+      return createdUser;
+    } catch (error) {
+      console.log(error?.code);
+      if (error?.code === 11000) {
+        throw new HttpException(
+          'User with the same email address already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      } else {
+        throw new HttpException(
+          'Something went wrong',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
   }
 
   async findAll(): Promise<User[]> {

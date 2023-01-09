@@ -9,9 +9,6 @@ export class User {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
-  @Prop()
-  accessToken: string;
-
   @Prop({ trim: true })
   firstName: string;
 

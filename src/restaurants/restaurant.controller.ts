@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Restaurant } from './schemas/restaurant.schema';
 import { RestaurantService } from './restaurants.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
-import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/auth-guard/jwt-auth.guard';
+import RequestWithUser from '../auth/req-with-user.interface';
 
 @Controller('restaurants')
 export class RestaurantController {
@@ -10,8 +19,11 @@ export class RestaurantController {
 
   @UseGuards(JwtAuthGuard)
   @Post('create-restaurant')
-  async create(@Body() createRestaurantDto: CreateRestaurantDto) {
-    await this.restaurantService.create(createRestaurantDto);
+  async createRestaurant(
+    @Body() createRestaurantDto: CreateRestaurantDto,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.restaurantService.create(createRestaurantDto, req.user);
   }
 
   @Get()
