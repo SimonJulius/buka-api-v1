@@ -10,5 +10,6 @@ import { Food, FoodSchema } from './schema/food.schema';
   ],
   providers: [FoodService],
   controllers: [FoodController],
+  exports: [FoodService],
 })
 export class FoodModule {}

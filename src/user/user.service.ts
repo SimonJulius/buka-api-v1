@@ -19,7 +19,6 @@ export class UsersService {
       const createdUser = await this.userModel.create(createUserDto);
       return createdUser;
     } catch (error) {
-      console.log(error?.code);
       if (error?.code === 11000) {
         throw new HttpException(
           'User with the same email address already exists',
